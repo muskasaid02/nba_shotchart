@@ -39,7 +39,7 @@ function createSelect(label, options, value, onChange, {multiple=false, size=6}=
 
 export default function InteractiveViz(CONFIG) {
   const {
-    dataUrl,
+    data: rawData,
     columns,
     title = "Interactive Visualization"
   } = CONFIG;
@@ -92,13 +92,13 @@ export default function InteractiveViz(CONFIG) {
   });
   document.body.appendChild(tip);
 
-  // Load CSV
-  d3.csv(dataUrl, (d) => {
-    // Coerce
+  // Process the pre-loaded CSV data
+  const data = rawData.map(d => {
     const out = {...d};
     out.__x = +d[columns.x];
     out.__y = +d[columns.y];
-    out.__made = +d[columns.made];          // 0/1
+    // Handle both numeric (1/0) and string (TRUE/FALSE) formats
+    out.__made = d[columns.made] === "TRUE" || d[columns.made] === true || +d[columns.made] === 1 ? 1 : 0;
     out.__player = d[columns.player];
     out.__team = d[columns.team];
     out.__dist = +d[columns.distance];      // numeric
@@ -107,8 +107,9 @@ export default function InteractiveViz(CONFIG) {
     out.__mins = d[columns.minsLeft] ? +d[columns.minsLeft] : null;
     out.__secs = d[columns.secsLeft] ? +d[columns.secsLeft] : null;
     return out;
-  }).then((data) => {
-    // Controls — player & team filters
+  });
+
+  // Controls — player & team filters
     let allPlayers = Array.from(new Set(data.map(d => d.__player))).sort();
     let allTeams = Array.from(new Set(data.map(d => d.__team))).sort();
 
@@ -149,8 +150,11 @@ export default function InteractiveViz(CONFIG) {
     const x = d3.scaleLinear().domain(xDom).range([0, innerW]);
     const y = d3.scaleLinear().domain(yDom).range([innerH, 0]);
 
+    // Draw court once and keep reference for zoom transforms
+    const courtGroup = g.append("g").attr("class", "court");
+    
     // Draw a simple half-court (clean lines)
-    drawHalfCourt(g, x, y);
+    drawHalfCourt(courtGroup, x, y);
 
     const dots = g.append("g");
 
@@ -264,22 +268,20 @@ export default function InteractiveViz(CONFIG) {
       }
     }
 
-    // Draw court once and keep reference for zoom transforms
-    const courtGroup = g.append("g").attr("class", "court");
     function drawHalfCourt(target, sx, sy) {
       // We'll draw into `courtGroup` so zoom transforms affect both court & dots
-      courtGroup.selectAll("*").remove();
+      target.selectAll("*").remove();
 
       // Helpers in court coordinates:
       const line = (x1,y1,x2,y2) =>
-        courtGroup.append("line")
+        target.append("line")
           .attr("x1", sx(x1)).attr("y1", sy(y1))
           .attr("x2", sx(x2)).attr("y2", sy(y2))
           .attr("stroke", "#888").attr("stroke-width", 1);
 
       const arc = (cx, cy, r, start, end) => {
         const a = d3.arc().innerRadius(r).outerRadius(r).startAngle(start).endAngle(end);
-        const p = courtGroup.append("path").attr("d", a());
+        const p = target.append("path").attr("d", a());
         p.attr("transform", `translate(${sx(cx)},${sy(cy)}) scale(1,-1)`).attr("fill","none").attr("stroke","#888");
       };
 
@@ -290,7 +292,7 @@ export default function InteractiveViz(CONFIG) {
       line(-250, 470, 250, 470);       // half-court line
 
       // Hoop at (0, 60), backboard y≈40
-      const hoop = courtGroup.append("circle")
+      const hoop = target.append("circle")
         .attr("cx", sx(0))
         .attr("cy", sy(60))
         .attr("r", 7)
@@ -299,7 +301,7 @@ export default function InteractiveViz(CONFIG) {
       line(-30, 40, 30, 40);           // backboard
 
       // Paint (key) 16ft wide (±80), from baseline to 190
-      courtGroup.append("rect")
+      target.append("rect")
         .attr("x", sx(-80))
         .attr("y", sy(190))
         .attr("width", sx(80) - sx(-80))
@@ -323,7 +325,6 @@ export default function InteractiveViz(CONFIG) {
 
     // Initial draw
     redraw();
-  });
 
   // Clean up tooltip if the page unloads
   root.addEventListener("DOMNodeRemovedFromDocument", () => { tip.remove(); });

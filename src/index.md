@@ -7,24 +7,26 @@ title: "NBA 2003–04 Shot Chart Explorer"
 ```js
 import InteractiveViz from "./components/InteractiveViz.js";
 
-// Map your CSV columns here:
-const CONFIG = {
-  dataUrl: "/static/NBA_2004_Shots.csv",
-  columns: {
-    // Core fields (make sure these names match your CSV headers)
-    x: "LOC_X",                 // horizontal court coordinate
-    y: "LOC_Y",                 // vertical court coordinate
-    made: "SHOT_MADE",          // 1 made, 0 missed
-    player: "PLAYER_NAME",
-    team: "TEAM_NAME",
-    distance: "SHOT_DISTANCE",  // numeric
-    date: "GAME_DATE",          // format like MM-DD-YYYY (we'll parse)
-    quarter: "QUARTER",
-    minsLeft: "MINS_LEFT",
-    secsLeft: "SECS_LEFT"
-  },
-  title: "NBA 2003–04 Shot Chart Explorer"
+// Load the CSV data using FileAttachment (available in .md files)
+const rawData = await FileAttachment("data/NBA_2004_Shots.csv").csv();
+
+// Column mapping configuration
+const columns = {
+  x: "LOC_X",
+  y: "LOC_Y",
+  made: "SHOT_MADE",
+  player: "PLAYER_NAME",
+  team: "TEAM_NAME",
+  distance: "SHOT_DISTANCE",
+  date: "GAME_DATE",
+  quarter: "QUARTER",
+  minsLeft: "MINS_LEFT",
+  secsLeft: "SECS_LEFT"
 };
 
-display(InteractiveViz(CONFIG))
-
+// Pass the loaded data and config to the component
+display(InteractiveViz({
+  data: rawData,
+  columns: columns,
+  title: "NBA 2003–04 Shot Chart Explorer"
+}));
