@@ -1,0 +1,15 @@
+{
+    "name": "nba-shotchart",
+    "private": true,
+    "type": "module",
+    "scripts": {
+      "dev": "npx @observablehq/framework@latest preview --port 3000",
+      "build": "npx @observablehq/framework@latest build",
+      "observable": "npx @observablehq/framework@latest"
+    },
+    "dependencies": {
+      "d3": "^7.9.0"
+    }
+  }
+  
+  
