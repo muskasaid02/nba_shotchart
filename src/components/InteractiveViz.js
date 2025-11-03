@@ -148,7 +148,7 @@ export default function InteractiveViz(CONFIG) {
     const g = scatterSVG.append("g").attr("transform", `translate(${M.left},${M.top})`);
 
     const x = d3.scaleLinear().domain(xDom).range([0, innerW]);
-    const y = d3.scaleLinear().domain(yDom).range([innerH, 0]);
+    const y = d3.scaleLinear().domain(yDom).range([0, innerH]);
 
     // Draw court once and keep reference for zoom transforms
     const courtGroup = g.append("g").attr("class", "court");
@@ -282,7 +282,7 @@ export default function InteractiveViz(CONFIG) {
       const arc = (cx, cy, r, start, end) => {
         const a = d3.arc().innerRadius(r).outerRadius(r).startAngle(start).endAngle(end);
         const p = target.append("path").attr("d", a());
-        p.attr("transform", `translate(${sx(cx)},${sy(cy)}) scale(1,-1)`).attr("fill","none").attr("stroke","#888");
+        p.attr("transform", `translate(${sx(cx)},${sy(cy)})`).attr("fill","none").attr("stroke","#888");
       };
 
       // Baseline & sidelines (half court)
@@ -313,14 +313,15 @@ export default function InteractiveViz(CONFIG) {
       arc(0,190,60,0,Math.PI*2);
 
       // Restricted area (r≈40) around hoop
-      arc(0,60,40,Math.PI*0,Math.PI);
-
+      arc(0,60,40,0,Math.PI);
+      
       // Three-point line: straight lines to ~ (±220, 0→140) + arc (r≈238.7) centered at hoop
       line(-220, 0, -220, 140);
       line(220, 0, 220, 140);
       // 3pt arc centered at hoop (0,60), from left to right
       const threeRadius = 238.7;
-      arc(0,60,threeRadius, -Math.acos( (220)/threeRadius ), Math.PI + Math.acos( (220)/threeRadius ));
+      const angleOffset = Math.asin(220 / threeRadius);
+      arc(0, 60, threeRadius, Math.PI/2 - angleOffset, Math.PI/2 + angleOffset);
     }
 
     // Initial draw
