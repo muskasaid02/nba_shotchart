@@ -223,10 +223,34 @@ export function shotExplorer(rawRows) {
       // Mirror to a single half-court (NBA court length ~94 ft)
       const yHalf = yRaw > 47 ? 94 - yRaw : yRaw;
 
+      // Normalize SHOT_MADE into a real boolean
+      const rawMade = d.SHOT_MADE;
+      let madeFlag;
+
+      if (typeof rawMade === "boolean") {
+        // already true/false
+        madeFlag = rawMade;
+      } else if (typeof rawMade === "number") {
+        // 1 = made, 0 = missed
+        madeFlag = rawMade === 1;
+      } else {
+        // strings like "True", "False", "Made Shot", "Missed Shot", etc.
+        const s = String(rawMade).trim().toLowerCase();
+        if (s.includes("miss")) {
+          madeFlag = false;
+        } else if (s.includes("made") || s === "1" || s === "true" || s === "y") {
+          madeFlag = true;
+        } else {
+          // fallback: treat unknown as miss
+          madeFlag = false;
+        }
+      }
+
+
       return {
         player: d.PLAYER_NAME,
         team: d.TEAM_NAME,
-        made: !!d.SHOT_MADE, // boolean
+        made: madeFlag,
         x,
         y: yHalf,
         dist: +d.SHOT_DISTANCE,
@@ -238,6 +262,7 @@ export function shotExplorer(rawRows) {
         actionType: d.ACTION_TYPE,
         rawDate: d.GAME_DATE
       };
+      
     });
 
   // Unique players sorted by attempts (most attempts first)
@@ -676,7 +701,7 @@ function brushed(event) {
       filtered = filtered.filter((d) => d.made);
     } else if (resultFilter === "Missed") {
       filtered = filtered.filter((d) => !d.made);
-    }
+    }    
 
     if (distanceFilter !== "All") {
       if (distanceFilter === "0–10") {
