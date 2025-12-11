@@ -3,5 +3,6 @@ export default {
     theme: "light",
     cleanUrls: true,
     root: "src",
+    base: "nba_shotchart",
   };
   
