@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.13.3">
+<title>NBA 2003–04 Shot Chart Explorer</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight.dcdbf18e.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight.dcdbf18e.css">
+<link rel="modulepreload" href="./_observablehq/client.52f31afb.js">
+<link rel="modulepreload" href="./_observablehq/runtime.e080113b.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.73a8ec5a.js">
+<link rel="modulepreload" href="./_import/components/InteractiveViz.a73c3d06.js">
+<link rel="modulepreload" href="./_node/d3@7.9.0/index.8946009e.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/9cffc2bd.js">
+<link rel="modulepreload" href="./_node/d3-array@3.2.4/index.f89e3560.js">
+<link rel="modulepreload" href="./_node/d3-axis@3.0.0/index.34ded868.js">
+<link rel="modulepreload" href="./_node/d3-brush@3.0.0/index.76e53644.js">
+<link rel="modulepreload" href="./_node/d3-chord@3.0.1/index.eb7a3f59.js">
+<link rel="modulepreload" href="./_node/d3-color@3.1.0/index.e8c126ff.js">
+<link rel="modulepreload" href="./_node/d3-contour@4.0.2/index.dec5b7e9.js">
+<link rel="modulepreload" href="./_node/d3-delaunay@6.0.4/index.1771ba9f.js">
+<link rel="modulepreload" href="./_node/d3-dispatch@3.0.1/index.be49ca5f.js">
+<link rel="modulepreload" href="./_node/d3-drag@3.0.0/index.d3ae5f0f.js">
+<link rel="modulepreload" href="./_node/d3-dsv@3.0.1/index.48418e2e.js">
+<link rel="modulepreload" href="./_node/d3-ease@3.0.1/index.09153f73.js">
+<link rel="modulepreload" href="./_node/d3-fetch@3.0.1/index.2c1c499d.js">
+<link rel="modulepreload" href="./_node/d3-force@3.0.0/index.952bd793.js">
+<link rel="modulepreload" href="./_node/d3-format@3.1.0/index.da30fb93.js">
+<link rel="modulepreload" href="./_node/d3-geo@3.1.1/index.75f0ca91.js">
+<link rel="modulepreload" href="./_node/d3-hierarchy@3.1.2/index.0a013d9a.js">
+<link rel="modulepreload" href="./_node/d3-interpolate@3.0.1/index.7ed7c7fe.js">
+<link rel="modulepreload" href="./_node/d3-path@3.1.0/index.c2b3c473.js">
+<link rel="modulepreload" href="./_node/d3-polygon@3.0.1/index.32c3d834.js">
+<link rel="modulepreload" href="./_node/d3-quadtree@3.0.1/index.e9fed2eb.js">
+<link rel="modulepreload" href="./_node/d3-random@3.0.1/index.fd2cc361.js">
+<link rel="modulepreload" href="./_node/d3-scale@4.0.2/index.0574410e.js">
+<link rel="modulepreload" href="./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js">
+<link rel="modulepreload" href="./_node/d3-selection@3.0.0/index.13204b25.js">
+<link rel="modulepreload" href="./_node/d3-shape@3.2.0/index.b551bc1c.js">
+<link rel="modulepreload" href="./_node/d3-time@3.1.0/index.8fcc123e.js">
+<link rel="modulepreload" href="./_node/d3-time-format@4.1.0/index.08e7c36a.js">
+<link rel="modulepreload" href="./_node/d3-timer@3.0.1/index.0ee6092b.js">
+<link rel="modulepreload" href="./_node/d3-transition@3.0.1/index.d140d658.js">
+<link rel="modulepreload" href="./_node/d3-zoom@3.0.0/index.78e4486d.js">
+<link rel="modulepreload" href="./_node/internmap@2.0.3/index.4106013c.js">
+<link rel="modulepreload" href="./_node/delaunator@5.0.1/index.70ae1478.js">
+<link rel="modulepreload" href="./_node/robust-predicates@3.0.2/index.bdc459cc.js">
+<script type="module">
+
+import {define} from "./_observablehq/client.52f31afb.js";
+import {registerFile} from "./_observablehq/stdlib.73a8ec5a.js";
+
+registerFile("./data/NBA_2004_Shots.csv", {"name":"./data/NBA_2004_Shots.csv","mimeType":"text/csv","path":"./_file/data/NBA_2004_Shots.e615c4a3.csv","lastModified":1762121151157,"size":36877030});
+
+define({id: "0a8402f3", inputs: ["FileAttachment","display"], outputs: ["InteractiveViz","rawData","columns"], body: async (FileAttachment,display) => {
+const {default: InteractiveViz} = await import("./_import/components/InteractiveViz.a73c3d06.js");
+
+// Load the CSV data using FileAttachment (available in .md files)
+const rawData = await FileAttachment("./data/NBA_2004_Shots.csv").csv();
+
+// Column mapping configuration
+const columns = {
+  x: "LOC_X",
+  y: "LOC_Y",
+  made: "SHOT_MADE",
+  player: "PLAYER_NAME",
+  team: "TEAM_NAME",
+  distance: "SHOT_DISTANCE",
+  date: "GAME_DATE",
+  quarter: "QUARTER",
+  minsLeft: "MINS_LEFT",
+  secsLeft: "SECS_LEFT"
+};
+
+// Pass the loaded data and config to the component
+display(
+  InteractiveViz({
+    data: rawData,
+    columns: columns,
+    title: "NBA 2003–04 Shot Chart Explorer"
+  })
+);
+
+return {InteractiveViz,rawData,columns};
+}});
+
+</script>
+</head>
+<body>
+<div id="observablehq-center">
+<aside id="observablehq-toc" data-selector="h1:not(:first-of-type)[id], h2:first-child[id], :not(h1) + h2[id]">
+<nav>
+</nav>
+</aside>
+<main id="observablehq-main" class="observablehq">
+<h1 id="nba-2003-04-shot-chart-explorer" tabindex="-1"><a class="observablehq-header-anchor" href="#nba-2003-04-shot-chart-explorer">NBA 2003–04 Shot Chart Explorer</a></h1>
+<div class="observablehq observablehq--block"><!--:0a8402f3:--></div>
+<pre><code>Design Analysis
+
+  For this assignment, I wanted to make an interactive graphic 
+  that actually feels useful and fun to explore instead of just 
+  a static shot chart. NBA shot data works well because it is 
+  naturally spatial, so mapping the shot coordinates onto a half 
+  court makes the visual easy to understand. I used simple colored 
+  dots to show makes (green) and misses (red) so the chart stays 
+  readable even when there are a lot of points.
+
+  I added a separate distance histogram instead of trying to encode
+  distance directly on the court, because that made things too cluttered. 
+  The histogram also let me add brushing, which was one of the 
+  most helpful interactions. Dragging across the distance range instantly 
+  filters the court and updates the summary stats, which makes it 
+  really easy to compare how players shoot from different spots.
+
+  The sidebar filters let you look at different players, teams, 
+  shot results, and distance categories. Everything updates instantly, 
+  and the tooltips give extra info when you hover without overwhelming 
+  the chart.
+
+Development Process
+  I started by exploring the dataset and fixing the shot-make field so 
+  both makes and misses would display correctly. Then I built the 
+  court, plotted the shots, added the histogram, brushing, and summary cards. 
+  Most of the debugging time went into getting the court aligned correctly and making 
+  sure all the filters updated the whole view consistently. Overall I probably spent 
+  around 8–10 hours building, testing, and refining everything.
+
+References
+  NBA 2003–04 shot dataset (course CSV)
+  D3.js documentation (scales, brushes, selections)
+  Observable Framework docs
+</code></pre>
+</main>
+<footer id="observablehq-footer">
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-12-10T17:08:00">Dec 10, 2025</a>.</div>
+</footer>
+</div>
+</body>
+</html>
